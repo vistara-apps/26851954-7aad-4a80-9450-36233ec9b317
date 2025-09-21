@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { AnalysisRequest, ProjectAnalysis, ApiResponse } from '@/lib/types';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
-  dangerouslyAllowBrowser: true,
-});
-
 export async function POST(request: NextRequest) {
   try {
     const body: AnalysisRequest = await request.json();
@@ -20,6 +14,13 @@ export async function POST(request: NextRequest) {
         data: null,
       }, { status: 400 });
     }
+
+    // Initialize OpenAI client at runtime
+    const openai = new OpenAI({
+      apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY,
+      baseURL: "https://openrouter.ai/api/v1",
+      dangerouslyAllowBrowser: true,
+    });
 
     // Generate analysis using AI
     const analysisPrompt = `
